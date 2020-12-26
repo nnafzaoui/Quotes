@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Quoty</title>
+    <link rel="stylesheet" href="index.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="canv">
+      <div class="nav">
+        <div class="canv">
+        <label for="">Language</label>
+        <select  name="" id="lang">
+          <option value="fr">French</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="pt">Portuguese</option>
+          <option value="it">Italian</option>
+          <option value="de">German</option>
+          <option value="cs">Czech</option>
+          <option value="sk">Slovak</option>
+        </select>
+        </div>
+        <div class="canv">
+        <label for="">Notification time</label>
+        <select name="" id="timer">
+          <option value="30">30 Min</option>
+          <option value="60">1 hour</option>
+          <option value="120">2 hours</option>
+        </select>
+        </div>
+        <button class="butn" type="button" onclick="callQuote()">Start</button>
+        <button style="color: red;" class="butn" id="s">Stop</button>
+      </div>
+      <div class="quote">
+        <p id="q">We talk about this and that. There’s no rest except on these branching moments.</p>
+        <h5 id="a">Rumi</h5>
+      </div>
+    </div>
+  </body>
+  <script src="config.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    function callQuote() {
+      let s = "„ ";
+      let e = " “";
+      let lang = document.getElementById('lang');
+      let key = config.API_KEY;
+      let host = config.HOST;
+      fetch("https://quotes15.p.rapidapi.com/quotes/random/?language_code="+ lang.value , {
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-key": key,
+        "x-rapidapi-host": host
+      }
+      })
+      .then(response => {
+        return response.json();
+      }).then(quote =>{
+      document.getElementById("a").innerHTML = quote.originator.name;
+      document.getElementById("q").innerHTML = s + quote.content + e;
+      const myNotification = new Notification(quote.originator.name, {
+          body: quote.content
+          })
+            myNotification.onclick = () => {
+        document.getElementById("a").innerHTML = quote.originator.name;
+        document.getElementById("q").innerHTML = quote.content;
+        }
+      }).catch(err => {
+        console.error(err);
+      });
+      }
+      let minutes = document.getElementById('timer'); ;
+      let ms = minutes.value * 60000;
+      var interval = setInterval(function () { callQuote(); }, ms);
+      $('#s').click(function() {
+        clearInterval(interval);
+      });
+  </script>
+</html>

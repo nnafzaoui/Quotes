@@ -62,11 +62,11 @@
       document.getElementById("a").innerHTML = quote.originator.name;
       document.getElementById("q").innerHTML = s + quote.content + e;
       const myNotification = new Notification(quote.originator.name, {
-          body: quote.content
+          body: s + quote.content + e
           })
             myNotification.onclick = () => {
         document.getElementById("a").innerHTML = quote.originator.name;
-        document.getElementById("q").innerHTML = quote.content;
+        document.getElementById("q").innerHTML = s + quote.content + e;
         }
       }).catch(err => {
         console.error(err);
